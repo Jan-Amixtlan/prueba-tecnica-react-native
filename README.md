@@ -44,4 +44,4 @@ Aplicación móvil multiempresa desarrollada con React Native y Expo que cumple 
 1. **Clonar el repositorio**
 ```bash
 git clone https://github.com/[TU-USUARIO]/prueba-tecnica-react-native.git
-cd prueba-tecnica-react-native
+cd prueba-movil
