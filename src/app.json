@@ -1,4 +1,4 @@
-﻿{
+{
   "expo": {
     "name": "Prueba Técnica",
     "slug": "prueba-tecnica",
@@ -25,6 +25,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
-  }
+    },
+    "plugins": [
+      "expo-image-picker"
+    ],
+    "newArchEnabled": false,
+    "sdkVersion": "54.0.0"
+}
 }

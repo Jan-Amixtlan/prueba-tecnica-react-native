@@ -1,50 +1,47 @@
-# Welcome to your Expo app 👋
+# Prueba Técnica - Desarrollador Móvil React Native/Expo
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## 📱 Descripción
+Aplicación móvil multiempresa desarrollada con React Native y Expo que cumple con todos los requisitos de la prueba técnica: selección de empresa, autenticación, navegación, perfil de usuario y persistencia de datos.
 
-## Get started
+## ✅ Requisitos Cumplidos
 
-1. Install dependencies
+### 1. Selección de Empresa
+- Pantalla inicial con 3 empresas (Empresa 1, Empresa 2, Empresa 3)
+- Cada empresa tiene un color principal distinto
+- Colores aplicados consistentemente en encabezados y elementos UI
 
-   ```bash
-   npm install
-   ```
+### 2. Inicio de Sesión por Empresa
+- Pantalla de login con validación de credenciales
+- Usuarios simulados por empresa
+- Mensajes de error para credenciales incorrectas
+- Persistencia de sesión
 
-2. Start the app
+### 3. Home y Menú de Navegación
+- Pantalla de bienvenida post-login
+- Menú de navegación con tabs (Inicio, Perfil, Configuración)
+- Diseño responsivo y usable
 
-   ```bash
-   npx expo start
-   ```
+### 4. Perfil de Usuario
+- Visualización de nombre, email y empresa
+- Cambio de foto de perfil desde el dispositivo
+- Edición de datos básicos del usuario
+- Guardado local de información
 
-In the output, you'll find options to open the app in a
+### 5. Cierre de Sesión
+- Opción clara para cerrar sesión
+- Limpieza completa de la sesión activa
+- Redirección a pantalla de selección de empresa
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🚀 Instalación y Ejecución
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Prerrequisitos
+- Node.js 18 o superior
+- Expo Go instalado en dispositivo móvil
+- Conexión a internet para descargar dependencias
 
-## Get a fresh project
+### Pasos de Instalación
 
-When you're ready, run:
-
+1. **Clonar el repositorio**
 ```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+git clone https://github.com/[TU-USUARIO]/prueba-tecnica-react-native.git
+cd prueba-tecnica-react-native
