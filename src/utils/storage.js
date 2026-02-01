@@ -7,7 +7,7 @@ export const StorageKeys = {
   USER_PROFILE_IMAGE: 'user_profile_image'
 };
 
-// Guardar datos
+// Aqui se guardan datos en AsyncStorage
 export const saveData = async (key, value) => {
   try {
     const jsonValue = JSON.stringify(value);
@@ -19,7 +19,7 @@ export const saveData = async (key, value) => {
   }
 };
 
-// Obtener datos
+// Para obtener datos
 export const getData = async (key) => {
   try {
     const jsonValue = await AsyncStorage.getItem(key);
@@ -30,7 +30,7 @@ export const getData = async (key) => {
   }
 };
 
-// Eliminar datos
+// para eliminar datos
 export const removeData = async (key) => {
   try {
     await AsyncStorage.removeItem(key);

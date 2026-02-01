@@ -25,7 +25,7 @@ export const mockUsers = {
   ]
 };
 
-// Validar credenciales
+// Validar las credenciales
 export const validateCredentials = (company, email, password) => {
   const users = mockUsers[company];
   if (!users) return null;
