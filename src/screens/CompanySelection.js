@@ -8,6 +8,7 @@ import {
   SafeAreaView 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 const { width } = Dimensions.get("window");
 
@@ -19,22 +20,25 @@ const CompanySelection = () => {
       id: "empresa1", 
       name: "Empresa 1", 
       primaryColor: "#2196F3",
-      secondaryColor: "#1565C0",
-      icon: "🏢"
+      secondaryColor: "#0D47A1",
+      icon: "business", // Icono de empresa/negocio
+      description: "Sistema corporativo principal"
     },
     { 
       id: "empresa2", 
       name: "Empresa 2", 
       primaryColor: "#4CAF50",
       secondaryColor: "#2E7D32",
-      icon: "💼"
+      icon: "corporate-fare", // Icono de corporación
+      description: "Plataforma de gestión empresarial"
     },
     { 
       id: "empresa3", 
       name: "Empresa 3", 
       primaryColor: "#FF9800",
-      secondaryColor: "#EF6C00",
-      icon: "🏭"
+      secondaryColor: "#E65100",
+      icon: "apartment", // Icono de edificio/apartamento
+      description: "Solución de administración"
     }
   ];
 
@@ -48,6 +52,9 @@ const CompanySelection = () => {
         <Text style={styles.subtitle}>Bienvenido al Sistema</Text>
         <Text style={styles.title}>Selecciona tu Empresa</Text>
         <View style={styles.divider} />
+        <Text style={styles.instruction}>
+          Elige la empresa a la que perteneces para acceder al sistema
+        </Text>
       </View>
 
       <View style={styles.content}>
@@ -67,18 +74,31 @@ const CompanySelection = () => {
               activeOpacity={0.85}
             >
               <View style={styles.companyContent}>
-                <View style={styles.companyIconContainer}>
-                  <Text style={styles.companyIcon}>{company.icon}</Text>
+                <View style={[
+                  styles.iconContainer,
+                  { backgroundColor: company.secondaryColor }
+                ]}>
+                  <Icon 
+                    name={company.icon} 
+                    size={28} 
+                    color="#FFFFFF" 
+                  />
                 </View>
                 <View style={styles.textContainer}>
                   <Text style={styles.companyName}>{company.name}</Text>
-                  <Text style={styles.companyHint}>Presiona para ingresar</Text>
+                  <Text style={styles.companyDescription}>
+                    {company.description}
+                  </Text>
                 </View>
                 <View style={[
                   styles.arrowContainer,
                   { backgroundColor: company.secondaryColor }
                 ]}>
-                  <Text style={styles.arrow}>→</Text>
+                  <Icon 
+                    name="arrow-forward" 
+                    size={22} 
+                    color="#FFFFFF" 
+                  />
                 </View>
               </View>
             </TouchableOpacity>
@@ -86,9 +106,10 @@ const CompanySelection = () => {
         </View>
 
         <View style={styles.footer}>
+          <Icon name="help-outline" size={20} color="#666" />
           <Text style={styles.footerText}>
             ¿No encuentras tu empresa?{"\n"}
-            <Text style={styles.contactText}>Contacta al administrador</Text>
+            <Text style={styles.contactText}>Contacta al administrador del sistema</Text>
           </Text>
         </View>
       </View>
@@ -102,24 +123,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F9FA",
   },
   header: {
-    paddingTop: 50,
-    paddingHorizontal: 24,
-    paddingBottom: 30,
+    paddingTop: 35,
+    paddingHorizontal: 25,
+    paddingBottom: 25,
     backgroundColor: "#FFFFFF",
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.08,
     shadowRadius: 12,
-    elevation: 3,
-    marginBottom: 10,
+    elevation: 5,
+    marginBottom: 20,
   },
   subtitle: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: "500",
     color: "#666",
-    marginBottom: 6,
+    marginBottom: 8,
     textAlign: "center",
     letterSpacing: 0.5,
   },
@@ -137,6 +158,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#2196F3",
     borderRadius: 2,
     alignSelf: "center",
+    marginBottom: 16,
+  },
+  instruction: {
+    fontSize: 14,
+    color: "#666",
+    textAlign: "center",
+    lineHeight: 20,
+    paddingHorizontal: 20,
   },
   content: {
     flex: 1,
@@ -156,24 +185,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 6,
-    transform: [{ scale: 1 }],
   },
   companyContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  companyIconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+  iconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 16,
-  },
-  companyIcon: {
-    fontSize: 28,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   textContainer: {
     flex: 1,
@@ -181,17 +210,18 @@ const styles = StyleSheet.create({
   companyName: {
     color: "#FFFFFF",
     fontSize: 20,
-    fontWeight: "600",
+    fontWeight: "700",
     marginBottom: 4,
     letterSpacing: 0.3,
     textShadowColor: "rgba(0, 0, 0, 0.1)",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
   },
-  companyHint: {
+  companyDescription: {
     color: "rgba(255, 255, 255, 0.9)",
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "400",
+    lineHeight: 16,
   },
   arrowContainer: {
     width: 40,
@@ -200,14 +230,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 10,
-  },
-  arrow: {
-    color: "#FFFFFF",
-    fontSize: 20,
-    fontWeight: "700",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   footer: {
-    paddingVertical: 30,
+    paddingVertical: 25,
     paddingHorizontal: 20,
     alignItems: "center",
     borderTopWidth: 1,
@@ -216,12 +246,16 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 16,
     marginHorizontal: -10,
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
   },
   footerText: {
     fontSize: 14,
     color: "#666",
     textAlign: "center",
     lineHeight: 20,
+    flex: 1,
   },
   contactText: {
     color: "#2196F3",
