@@ -46,23 +46,30 @@ experiencia básica de usuario.
 
 ### Pasos de Instalación
 ```bash
-1. Clonar el repositorio
+1. Abrir Visual Studio Code (o tu entorno preferido)
+
+2. Abrir terminal integrada
+En VS Code: Terminal → New Terminal (Ctrl + oCmd + )
+O usa tu terminal/consola favorita
+
+Ejecutar los siguientes comandos.
+3. Clonar el repositorio
 git clone https://github.com/TU-USUARIO/prueba-tecnica-react-native.git
 
-2. Ingresar a la carpeta
+4. Ingresar a la carpeta
 cd prueba-tecnica-react-native
 
-3. Instalar todas las dependencias necesarias
+5. Instalar todas las dependencias necesarias
 npm install
 
-# Si usa Mac y quiere probar en iOS Simulator
-npm install -g ios-sim
-
-3. Ejecutar el servidor de desarrollo
+6. Ejecutar el servidor de desarrollo
 npx expo start
 # En caso de requeri limpiar cache
 npx expo start --clear
 
-4. Luego:
+# Si usa Mac y quiere probar en iOS Simulator
+npm install -g ios-sim
+
+7. Luego:
 Escanear el código QR con Expo Go (App Store / Play Store)
 La app se cargará automáticamente en su teléfono
