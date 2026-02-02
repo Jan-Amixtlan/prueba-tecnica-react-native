@@ -67,9 +67,19 @@ npx expo start
 # En caso de requeri limpiar cache
 npx expo start --clear
 
+
 # Si usa Mac y quiere probar en iOS Simulator
 npm install -g ios-sim
 
 7. Luego:
 Escanear el código QR con Expo Go (App Store / Play Store)
 La app se cargará automáticamente en su teléfono
+
+```
+🔐 Credenciales para Inicio de Sesión (Datos de Prueba)
+| Email               | Contraseña |  Empresa  |
+|---------------------|------------|-----------|
+| leonel@empresa1.com | 123456     | Empresa 1 |
+| ambar@empresa2.com  | 123456     | Empresa 2 |
+| carlos@empresa3.com | 123456     | Empresa 3 |
+|----------------------------------------------|
