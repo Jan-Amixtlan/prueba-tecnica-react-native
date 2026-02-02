@@ -47,7 +47,7 @@ experiencia básica de usuario.
 ### Pasos de Instalación
 ```bash
 1. Clonar el repositorio
-git clone https://github.com/[TU-USUARIO]/prueba-tecnica-react-native.git
+git clone https://github.com/TU-USUARIO/prueba-tecnica-react-native.git
 
 2. Ingresar a la carpeta
 cd prueba-tecnica-react-native
