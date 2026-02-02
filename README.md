@@ -43,21 +43,20 @@ Aplicación móvil multiempresa desarrollada con React Native y Expo que cumple 
 - Conexión a internet para descargar dependencias
 
 ### Pasos de Instalación
-
-1. **Clonar el repositorio**
 ```bash
+1. Clonar el repositorio
 git clone https://github.com/[TU-USUARIO]/prueba-tecnica-react-native.git
 
-2. **Ingresar a la carpeta**
+2. Ingresar a la carpeta
 cd prueba-tecnica-react-native
 
-3. **Instalar todas las dependencias necesarias**
+3. Instalar todas las dependencias necesarias
 npm install
 
 # Si usa Mac y quiere probar en iOS Simulator
 npm install -g ios-sim
 
-3. **Ejecutar el servidor de desarrollo**
+3. Ejecutar el servidor de desarrollo
 npx expo start
 # En caso de requeri limpiar cache
 npx expo start --clear
