@@ -36,6 +36,9 @@ Aplicación móvil multiempresa desarrollada con React Native y Expo que cumple 
 
 ### Prerrequisitos
 - Node.js 18 o superior
+  Verifique con: `node --version`
+- npm (viene con Node.js)
+  Verifique con: `npm --version`
 - Expo Go instalado en dispositivo móvil
 - Conexión a internet para descargar dependencias
 
@@ -45,3 +48,15 @@ Aplicación móvil multiempresa desarrollada con React Native y Expo que cumple 
 ```bash
 git clone https://github.com/[TU-USUARIO]/prueba-tecnica-react-native.git
 cd prueba-movil
+# Instalar todas las dependencias necesarias
+npm install
+# Si usa Mac y quiere probar en iOS Simulator
+npm install -g ios-sim
+# Ejecutar el servidor de desarrollo
+npx expo start
+# En caso de requeri limpiar cache
+npx expo start --clear
+
+Luego:
+Escanear el código QR con Expo Go (App Store / Play Store)
+La app se cargará automáticamente en su teléfono
