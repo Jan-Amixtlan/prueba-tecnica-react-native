@@ -82,4 +82,4 @@ La app se cargará automáticamente en su teléfono
 | leonel@empresa1.com | 123456     | Empresa 1 |
 | ambar@empresa2.com  | 123456     | Empresa 2 |
 | carlos@empresa3.com | 123456     | Empresa 3 |
-|----------------------------------------------|
+
