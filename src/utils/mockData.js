@@ -9,7 +9,7 @@ export const mockUsers = {
   ],
   empresa2: [
     { 
-      email: 'Ambar@empresa2.com', 
+      email: 'ambar@empresa2.com', 
       password: '123456', 
       name: 'Ámbar Estrada Ruiz',
       company: 'Empresa 2'
@@ -17,7 +17,7 @@ export const mockUsers = {
   ],
   empresa3: [
     { 
-      email: 'Carlos@empresa3.com', 
+      email: 'carlos@empresa3.com', 
       password: '123456', 
       name: 'Carlos López Gallejo',
       company: 'Empresa 3'
