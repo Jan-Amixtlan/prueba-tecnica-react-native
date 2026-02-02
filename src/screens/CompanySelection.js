@@ -21,7 +21,7 @@ const CompanySelection = () => {
       name: "Empresa 1", 
       primaryColor: "#2196F3",
       secondaryColor: "#0D47A1",
-      icon: "business", // Icono de empresa/negocio
+      icon: "business", // empresa/negocio
       description: "Sistema corporativo principal"
     },
     { 
@@ -29,7 +29,7 @@ const CompanySelection = () => {
       name: "Empresa 2", 
       primaryColor: "#4CAF50",
       secondaryColor: "#2E7D32",
-      icon: "corporate-fare", // Icono de corporación
+      icon: "corporate-fare", // corporación
       description: "Plataforma de gestión empresarial"
     },
     { 
@@ -37,7 +37,7 @@ const CompanySelection = () => {
       name: "Empresa 3", 
       primaryColor: "#FF9800",
       secondaryColor: "#E65100",
-      icon: "apartment", // Icono de edificio/apartamento
+      icon: "apartment", //  edificio/apartamento
       description: "Solución de administración"
     }
   ];

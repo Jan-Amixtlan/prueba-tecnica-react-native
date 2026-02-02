@@ -17,10 +17,14 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { getData, saveData, removeData } from '../utils/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getData, saveData } from '../utils/storage';
 import { getCompanyColor } from '../utils/colors';
 
 const { width } = Dimensions.get('window');
+
+// Función para generar claves específicas por usuario
+const getUserSpecificKey = (baseKey, userId) => `${baseKey}_${userId}`;
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -33,6 +37,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
     loadUserData();
@@ -40,23 +45,62 @@ const Profile = () => {
 
   const loadUserData = async () => {
     setLoading(true);
-    const data = await getData('user_data');
-    const savedImage = await getData('user_profile_image');
     
-    if (data) {
-      setUserData(data);
-      setName(data.name);
-      setEmail(data.email);
-      setCompanyId(data.company);
+    try {
+      // 1. Cargar datos de sesión actual
+      const data = await getData('user_data');
+      
+      if (data) {
+        setUserData(data);
+        setName(data.name);
+        setEmail(data.email);
+        setCompanyId(data.company);
+        
+        // Obtener ID único del usuario (usamos email como ID único)
+        const userUniqueId = data.email || data.id || 'default_user';
+        setUserId(userUniqueId);
+        
+        // 2. Generar claves específicas para este usuario
+        const userDataKey = getUserSpecificKey('user_persistent_data', userUniqueId);
+        const userImageKey = getUserSpecificKey('user_persistent_image', userUniqueId);
+        
+        // 3. Cargar imagen persistente específica de este usuario (si existe)
+        const userPersistentImage = await AsyncStorage.getItem(userImageKey);
+        if (userPersistentImage) {
+          setImage(userPersistentImage);
+        } else {
+          // Si no hay imagen persistente específica, verificar si hay imagen general
+          const sessionImage = await getData('user_profile_image');
+          if (sessionImage) {
+            setImage(sessionImage);
+          }
+        }
+        
+        // 4. Cargar datos persistentes específicos de este usuario
+        const userPersistentData = await AsyncStorage.getItem(userDataKey);
+        if (userPersistentData) {
+          const profileData = JSON.parse(userPersistentData);
+          // Verificar que los datos pertenecen a este usuario
+          if (profileData.userId === userUniqueId) {
+            if (profileData.name) setName(profileData.name);
+            if (profileData.email) setEmail(profileData.email);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      Alert.alert('Error', 'No se pudieron cargar los datos del perfil');
+    } finally {
+      setLoading(false);
     }
-    
-    if (savedImage) {
-      setImage(savedImage);
-    }
-    setLoading(false);
   };
 
   const pickImage = async () => {
+    if (!userId) {
+      Alert.alert('Error', 'No se pudo identificar al usuario');
+      return;
+    }
+
     setImageLoading(true);
     
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -76,19 +120,36 @@ const Profile = () => {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
-      base64: true,
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      await saveData('user_profile_image', result.assets[0].uri);
-      Alert.alert('Éxito', 'Foto de perfil actualizada correctamente');
+      const imageUri = result.assets[0].uri;
+      setImage(imageUri);
+      
+      try {
+        // Generar clave específica para este usuario
+        const userImageKey = getUserSpecificKey('user_persistent_image', userId);
+        
+        // Guardar imagen PERSISTENTEMENTE solo para este usuario
+        await AsyncStorage.setItem(userImageKey, imageUri);
+    
+        
+        Alert.alert('Éxito', 'Foto de perfil guardada para tu cuenta');
+      } catch (error) {
+        console.error('Error saving image:', error);
+        Alert.alert('Error', 'No se pudo guardar la imagen');
+      }
     }
     
     setImageLoading(false);
   };
 
   const handleSave = async () => {
+    if (!userId) {
+      Alert.alert('Error', 'No se pudo identificar al usuario');
+      return;
+    }
+
     if (!name.trim() || !email.trim()) {
       Alert.alert('Campos requeridos', 'Por favor completa todos los campos');
       return;
@@ -103,6 +164,22 @@ const Profile = () => {
     setSaving(true);
     
     try {
+      // Generar clave específica para este usuario
+      const userDataKey = getUserSpecificKey('user_persistent_data', userId);
+      
+      // 1. Guardar datos PERSISTENTES específicos de este usuario
+      const persistentData = {
+        userId: userId,
+        name: name.trim(),
+        email: email.trim(),
+        company: companyId,
+        updatedAt: new Date().toISOString(),
+        lastModified: new Date().toLocaleString()
+      };
+      
+      await AsyncStorage.setItem(userDataKey, JSON.stringify(persistentData));
+      
+      // 2. Actualizar también datos de sesión para consistencia inmediata
       const updatedData = {
         ...userData,
         name: name.trim(),
@@ -115,8 +192,8 @@ const Profile = () => {
       setEditing(false);
       
       Alert.alert(
-        '¡Perfecto!',
-        'Tu información ha sido actualizada exitosamente',
+        '¡Guardado!',
+        'Tu información ha sido actualizada exitosamente.',
         [{ text: 'Continuar' }]
       );
     } catch (error) {
@@ -140,8 +217,9 @@ const Profile = () => {
           style: 'destructive',
           onPress: async () => {
             try {
-              await removeData('user_data');
-              await removeData('user_profile_image');
+              // Solo eliminar datos de sesión, NO datos persistentes específicos del usuario
+              await AsyncStorage.removeItem('user_data');
+              
               navigation.reset({
                 index: 0,
                 routes: [{ name: 'CompanySelection' }]
@@ -154,6 +232,8 @@ const Profile = () => {
       ]
     );
   };
+
+  
 
   const handleCancel = () => {
     if (userData) {
@@ -241,6 +321,7 @@ const Profile = () => {
               <View style={styles.imageTextContainer}>
                 <Text style={styles.userName}>{name}</Text>
                 <Text style={styles.userEmail}>{email}</Text>
+                
                 <TouchableOpacity 
                   style={styles.changePhotoButton}
                   onPress={pickImage}
@@ -352,8 +433,8 @@ const Profile = () => {
                   <ActivityIndicator size="small" color="#FFFFFF" />
                 ) : (
                   <>
-                    <Icon name="check-circle" size={20} color="#FFFFFF" />
-                    <Text style={styles.saveButtonText}>Guardar cambios</Text>
+                    <Icon name="save" size={20} color="#FFFFFF" />
+                    <Text style={styles.saveButtonText}>Guardar</Text>
                   </>
                 )}
               </TouchableOpacity>
@@ -390,6 +471,10 @@ const Profile = () => {
               <Text style={styles.menuItemText}>Ayuda y soporte</Text>
               <Icon name="chevron-right" size={22} color="#999" />
             </TouchableOpacity>
+            
+            <View style={styles.divider} />
+            
+            
           </View>
 
           {/* Logout Button */}
@@ -402,13 +487,22 @@ const Profile = () => {
             <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
           </TouchableOpacity>
 
-          
+          {/* Footer informativo */}
+          <View style={styles.footer}>
+            <View style={styles.footerInfo}>
+              <Icon name="person" size={16} color="#666" />
+              <Text style={styles.footerText}>
+                Los cambios se guardan solo para tu cuenta. Cada usuario tiene su propia configuración.
+              </Text>
+            </View>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
+// Estilos (se mantienen igual que antes)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -555,7 +649,7 @@ const styles = StyleSheet.create({
   userEmail: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   changePhotoButton: {
     flexDirection: 'row',
@@ -684,6 +778,16 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     fontWeight: '500',
   },
+  warningMenuItem: {
+    backgroundColor: '#FFF5F5',
+    borderRadius: 8,
+    marginTop: 4,
+    paddingHorizontal: 12,
+  },
+  warningText: {
+    color: '#FF3B30',
+    fontWeight: '600',
+  },
   divider: {
     height: 1,
     backgroundColor: '#F0F0F0',
@@ -714,16 +818,23 @@ const styles = StyleSheet.create({
   footer: {
     alignItems: 'center',
     paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  footerInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8F9FA',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    width: '100%',
   },
   footerText: {
     fontSize: 13,
-    color: '#999',
-    marginBottom: 4,
-  },
-  versionText: {
-    fontSize: 12,
-    color: '#CCC',
-    fontWeight: '500',
+    color: '#666',
+    marginLeft: 10,
+    flex: 1,
+    lineHeight: 18,
   },
 });
 
