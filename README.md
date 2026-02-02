@@ -47,12 +47,17 @@ Aplicación móvil multiempresa desarrollada con React Native y Expo que cumple 
 1. **Clonar el repositorio**
 ```bash
 git clone https://github.com/[TU-USUARIO]/prueba-tecnica-react-native.git
-cd prueba-movil
-# Instalar todas las dependencias necesarias
+
+2. **Ingresar a la carpeta**
+cd prueba-tecnica-react-native
+
+3. **Instalar todas las dependencias necesarias**
 npm install
+
 # Si usa Mac y quiere probar en iOS Simulator
 npm install -g ios-sim
-# Ejecutar el servidor de desarrollo
+
+3. **Ejecutar el servidor de desarrollo**
 npx expo start
 # En caso de requeri limpiar cache
 npx expo start --clear
