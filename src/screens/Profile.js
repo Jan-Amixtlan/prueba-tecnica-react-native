@@ -45,25 +45,25 @@ const Profile = () => {
 
   const loadUserData = async () => {
     setLoading(true);
-    
+
     try {
       // 1. Cargar datos de sesión actual
       const data = await getData('user_data');
-      
+
       if (data) {
         setUserData(data);
         setName(data.name);
         setEmail(data.email);
         setCompanyId(data.company);
-        
+
         // Obtener ID único del usuario (usamos email como ID único)
         const userUniqueId = data.email || data.id || 'default_user';
         setUserId(userUniqueId);
-        
+
         // 2. Generar claves específicas para este usuario
         const userDataKey = getUserSpecificKey('user_persistent_data', userUniqueId);
         const userImageKey = getUserSpecificKey('user_persistent_image', userUniqueId);
-        
+
         // 3. Cargar imagen persistente específica de este usuario (si existe)
         const userPersistentImage = await AsyncStorage.getItem(userImageKey);
         if (userPersistentImage) {
@@ -75,7 +75,7 @@ const Profile = () => {
             setImage(sessionImage);
           }
         }
-        
+
         // 4. Cargar datos persistentes específicos de este usuario
         const userPersistentData = await AsyncStorage.getItem(userDataKey);
         if (userPersistentData) {
@@ -102,12 +102,12 @@ const Profile = () => {
     }
 
     setImageLoading(true);
-    
+
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
+
     if (status !== 'granted') {
       Alert.alert(
-        'Permiso necesario', 
+        'Permiso necesario',
         'Necesitamos acceso a tu galería para cambiar tu foto de perfil',
         [{ text: 'Entendido' }]
       );
@@ -125,23 +125,63 @@ const Profile = () => {
     if (!result.canceled) {
       const imageUri = result.assets[0].uri;
       setImage(imageUri);
-      
+
       try {
         // Generar clave específica para este usuario
         const userImageKey = getUserSpecificKey('user_persistent_image', userId);
-        
+
         // Guardar imagen PERSISTENTEMENTE solo para este usuario
         await AsyncStorage.setItem(userImageKey, imageUri);
-    
-        
+
+
         Alert.alert('Éxito', 'Foto de perfil guardada para tu cuenta');
       } catch (error) {
         console.error('Error saving image:', error);
         Alert.alert('Error', 'No se pudo guardar la imagen');
       }
     }
-    
+
     setImageLoading(false);
+  };
+
+  // Agrega esta función después de la función pickImage, antes de handleSave
+  const handleDeleteImage = async () => {
+    if (!userId || !image) return;
+
+    Alert.alert(
+      'Eliminar foto de perfil',
+      '¿Estás seguro de que quieres eliminar tu foto de perfil?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel'
+        },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // Generar clave específica para este usuario
+              const userImageKey = getUserSpecificKey('user_persistent_image', userId);
+
+              // Eliminar imagen persistente específica de este usuario
+              await AsyncStorage.removeItem(userImageKey);
+
+              // También eliminar imagen de sesión si existe
+              await AsyncStorage.removeItem('user_profile_image');
+
+              // Limpiar el estado local
+              setImage(null);
+
+              Alert.alert('Éxito', 'Foto de perfil eliminada correctamente');
+            } catch (error) {
+              console.error('Error deleting image:', error);
+              Alert.alert('Error', 'No se pudo eliminar la foto de perfil');
+            }
+          }
+        }
+      ]
+    );
   };
 
   const handleSave = async () => {
@@ -162,11 +202,11 @@ const Profile = () => {
     }
 
     setSaving(true);
-    
+
     try {
       // Generar clave específica para este usuario
       const userDataKey = getUserSpecificKey('user_persistent_data', userId);
-      
+
       // 1. Guardar datos PERSISTENTES específicos de este usuario
       const persistentData = {
         userId: userId,
@@ -176,9 +216,9 @@ const Profile = () => {
         updatedAt: new Date().toISOString(),
         lastModified: new Date().toLocaleString()
       };
-      
+
       await AsyncStorage.setItem(userDataKey, JSON.stringify(persistentData));
-      
+
       // 2. Actualizar también datos de sesión para consistencia inmediata
       const updatedData = {
         ...userData,
@@ -190,7 +230,7 @@ const Profile = () => {
       await saveData('user_data', updatedData);
       setUserData(updatedData);
       setEditing(false);
-      
+
       Alert.alert(
         '¡Guardado!',
         'Tu información ha sido actualizada exitosamente.',
@@ -208,9 +248,9 @@ const Profile = () => {
       'Cerrar Sesión',
       '¿Estás seguro de que deseas salir de tu cuenta?',
       [
-        { 
-          text: 'Cancelar', 
-          style: 'cancel' 
+        {
+          text: 'Cancelar',
+          style: 'cancel'
         },
         {
           text: 'Sí, salir',
@@ -219,7 +259,7 @@ const Profile = () => {
             try {
               // Solo eliminar datos de sesión, NO datos persistentes específicos del usuario
               await AsyncStorage.removeItem('user_data');
-              
+
               navigation.reset({
                 index: 0,
                 routes: [{ name: 'CompanySelection' }]
@@ -233,7 +273,7 @@ const Profile = () => {
     );
   };
 
-  
+
 
   const handleCancel = () => {
     if (userData) {
@@ -257,11 +297,11 @@ const Profile = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
       >
-        <ScrollView 
+        <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
@@ -269,7 +309,7 @@ const Profile = () => {
           <View style={[styles.header, { backgroundColor: colors.primary }]}>
             <View style={styles.headerOverlay} />
             <View style={styles.headerContent}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.backButton}
                 onPress={() => navigation.goBack()}
               >
@@ -285,16 +325,16 @@ const Profile = () => {
           {/* Profile Image Section */}
           <View style={styles.profileImageSection}>
             <View style={styles.imageContainer}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.imageTouchable}
                 onPress={pickImage}
                 disabled={imageLoading}
               >
                 <View style={[styles.imageWrapper, { borderColor: colors.primary }]}>
                   {image ? (
-                    <Image 
-                      source={{ uri: image }} 
-                      style={styles.profileImage} 
+                    <Image
+                      source={{ uri: image }}
+                      style={styles.profileImage}
                       onLoadStart={() => setImageLoading(true)}
                       onLoadEnd={() => setImageLoading(false)}
                     />
@@ -305,24 +345,24 @@ const Profile = () => {
                       </Text>
                     </View>
                   )}
-                  
+
                   {imageLoading && (
                     <View style={styles.imageLoader}>
                       <ActivityIndicator size="small" color="#FFFFFF" />
                     </View>
                   )}
-                  
+
                   <View style={styles.cameraBadge}>
                     <Icon name="photo-camera" size={16} color="#FFFFFF" />
                   </View>
                 </View>
               </TouchableOpacity>
-              
+
               <View style={styles.imageTextContainer}>
                 <Text style={styles.userName}>{name}</Text>
                 <Text style={styles.userEmail}>{email}</Text>
-                
-                <TouchableOpacity 
+
+                <TouchableOpacity
                   style={styles.changePhotoButton}
                   onPress={pickImage}
                   disabled={imageLoading}
@@ -332,6 +372,18 @@ const Profile = () => {
                     Cambiar foto de perfil
                   </Text>
                 </TouchableOpacity>
+                {/* Dentro de la sección profileImageSection, después del botón "Cambiar foto de perfil" */}
+                {image && (
+                  <TouchableOpacity
+                    style={styles.deletePhotoButton}
+                    onPress={handleDeleteImage}
+                  >
+                    <Icon name="delete" size={14} color="#FF3B30" />
+                    <Text style={styles.deletePhotoText}>
+                      Eliminar foto de perfil
+                    </Text>
+                  </TouchableOpacity>
+                )}{/*  */}
               </View>
             </View>
           </View>
@@ -343,18 +395,18 @@ const Profile = () => {
                 <Icon name="person" size={22} color="#2C3E50" />
                 <Text style={styles.sectionTitle}>Información Personal</Text>
               </View>
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 style={[styles.editToggle, editing && styles.editToggleActive]}
                 onPress={() => editing ? handleCancel() : setEditing(true)}
               >
-                <Icon 
-                  name={editing ? "close" : "edit"} 
-                  size={18} 
-                  color={editing ? "#FF3B30" : colors.primary} 
+                <Icon
+                  name={editing ? "close" : "edit"}
+                  size={18}
+                  color={editing ? "#FF3B30" : colors.primary}
                 />
                 <Text style={[
-                  styles.editButtonText, 
+                  styles.editButtonText,
                   { color: editing ? "#FF3B30" : colors.primary }
                 ]}>
                   {editing ? 'Cancelar' : 'Editar'}
@@ -449,32 +501,32 @@ const Profile = () => {
                 <Text style={styles.sectionTitle}>Configuración de Cuenta</Text>
               </View>
             </View>
-            
+
             <TouchableOpacity style={styles.menuItem}>
               <Icon name="security" size={22} color="#2196F3" />
               <Text style={styles.menuItemText}>Seguridad y privacidad</Text>
               <Icon name="chevron-right" size={22} color="#999" />
             </TouchableOpacity>
-            
+
             <View style={styles.divider} />
-            
+
             <TouchableOpacity style={styles.menuItem}>
               <Icon name="notifications" size={22} color="#FF9800" />
               <Text style={styles.menuItemText}>Notificaciones</Text>
               <Icon name="chevron-right" size={22} color="#999" />
             </TouchableOpacity>
-            
+
             <View style={styles.divider} />
-            
+
             <TouchableOpacity style={styles.menuItem}>
               <Icon name="help" size={22} color="#9C27B0" />
               <Text style={styles.menuItemText}>Ayuda y soporte</Text>
               <Icon name="chevron-right" size={22} color="#999" />
             </TouchableOpacity>
-            
+
             <View style={styles.divider} />
-            
-            
+
+
           </View>
 
           {/* Logout Button */}
@@ -836,6 +888,21 @@ const styles = StyleSheet.create({
     flex: 1,
     lineHeight: 18,
   },
+  deletePhotoButton: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingVertical: 6,
+  paddingHorizontal: 12,
+  borderRadius: 20,
+  backgroundColor: 'rgba(255, 59, 48, 0.1)',
+  marginTop: 8,
+},
+deletePhotoText: {
+  fontSize: 14,
+  fontWeight: '500',
+  marginLeft: 6,
+  color: '#FF3B30',
+},
 });
 
 export default Profile;
