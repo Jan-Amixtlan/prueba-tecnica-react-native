@@ -1,25 +1,25 @@
 export const mockUsers = {
   empresa1: [
     { 
-      email: 'usuario1@empresa1.com', 
+      email: 'leonel@empresa1.com', 
       password: '123456', 
-      name: 'Juan Pérez',
+      name: 'Leonel Gomez García',
       company: 'Empresa 1'
     }
   ],
   empresa2: [
     { 
-      email: 'usuario2@empresa2.com', 
+      email: 'Ambar@empresa2.com', 
       password: '123456', 
-      name: 'María García',
+      name: 'Ámbar Estrada Ruiz',
       company: 'Empresa 2'
     }
   ],
   empresa3: [
     { 
-      email: 'usuario3@empresa3.com', 
+      email: 'Carlos@empresa3.com', 
       password: '123456', 
-      name: 'Carlos López',
+      name: 'Carlos López Gallejo',
       company: 'Empresa 3'
     }
   ]

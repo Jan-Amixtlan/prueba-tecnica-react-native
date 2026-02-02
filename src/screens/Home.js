@@ -7,11 +7,14 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  Dimensions
+  Dimensions,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { getData } from '../utils/storage';
+import { getData, clearData } from '../utils/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getCompanyColor } from '../utils/colors';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
@@ -19,6 +22,7 @@ const Home = () => {
   const [userData, setUserData] = useState(null);
   const [companyId, setCompanyId] = useState('');
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
     loadUserData();
@@ -34,6 +38,35 @@ const Home = () => {
     setLoading(false);
   };
 
+  const handleLogout = () => {
+    Alert.alert(
+      'Cerrar Sesión',
+      '¿Estás seguro de que deseas salir de tu cuenta?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel'
+        },
+        {
+          text: 'Sí, salir',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // Solo eliminar datos de sesión, NO datos persistentes específicos del usuario
+              await AsyncStorage.removeItem('user_data');
+
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'CompanySelection' }]
+              });
+            } catch (error) {
+              Alert.alert('Error', 'No se pudo cerrar sesión. Intenta nuevamente.');
+            }
+          }
+        }
+      ]
+    );
+  };
   const colors = getCompanyColor(companyId);
   
 
@@ -169,17 +202,26 @@ const Home = () => {
             <Text style={styles.sectionTitle}>Acciones Rápidas</Text>
           </View>
           <View style={styles.actionsContainer}>
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity 
+              style={styles.actionButton} 
+              onPress={() => {}}
+            >
               <Icon name="edit" size={20} color="#2196F3" />
               <Text style={styles.actionText}>Editar Perfil</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity 
+              style={styles.actionButton} 
+              onPress={() => {}}
+            >
               <Icon name="refresh" size={20} color="#4CAF50" />
               <Text style={styles.actionText}>Actualizar Datos</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
+            <TouchableOpacity 
+              style={styles.actionButton} 
+              onPress={handleLogout}
+            >
               <Icon name="logout" size={20} color="#FF5722" />
-              <Text style={styles.actionText}>Cerrar Sesión</Text>
+              <Text style={styles.handleLogout}>Cerrar Sesión</Text>
             </TouchableOpacity>
           </View>
         </View>
